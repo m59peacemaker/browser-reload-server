@@ -1,0 +1,37 @@
+{
+  "name": "dust-server",
+  "version": "1.0.0",
+  "description": "Simple SPA development server with reload API. Injects reload script.",
+  "keywords": [
+    "spa",
+    "server",
+    "development",
+    "dev",
+    "inject",
+    "live",
+    "reload",
+    "api",
+    "refresh",
+    "css",
+    "single",
+    "page",
+    "app"
+  ],
+  "author": {
+    "name": "Johnny Hauser",
+    "email": "johnnyhauser@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/m59peacemaker/node-dust-server"
+  },
+  "license": "VOL",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.13.3",
+    "jsdom": "^7.2.2",
+    "serve-static": "^1.10.2",
+    "uuid-v4": "^0.1.0",
+    "ws": "^1.0.1"
+  }
+}
