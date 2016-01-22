@@ -29,8 +29,8 @@ function server(options) {
   });
   function broadcast(msg) {
     wss.clients.forEach(function each(client) {
-      client.send(msg);
-    });
+      client.send(msg)
+    })
   }
 
   app.use(serveStatic(dir, {
@@ -40,13 +40,13 @@ function server(options) {
     if (path.extname(req.url)) {
       res.status(404).end('404 Not Found')
     } else {
-      fs.readFile(path.join(dir, 'index.html'), 'utf8', (err, html) => {
-        jsdom.env(html, (err, window) => {
-          const script = window.document.createElement('script')
-          script.textContent = injectJS
-          window.document.body.appendChild(script)
-          res.send(jsdom.serializeDocument(window.document))
-        })
+      fs.readFile(path.join(dir, 'index.html'), (err, html) => {
+        if (err) { return res.status(404).end(err.toString()) }
+        const document = jsdom.jsdom(html)
+        const script = document.createElement('script')
+        script.textContent = injectJS
+        document.body.appendChild(script)
+        res.send(jsdom.serializeDocument(document))
       })
     }
   })
