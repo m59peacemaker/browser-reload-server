@@ -50,10 +50,22 @@ function server(options) {
       })
     }
   })
+
+  const reload = broadcast.bind(null, 'reload')
+  const refreshCSS =  broadcast.bind(null, 'refreshCSS')
+
+  function smartReload(path) {
+    if (path) {
+      path.extname(path).toLowerCase() === '.css' ? refreshCSS() : reload()
+    } else {
+      reload()
+    }
+  }
+
   return {
     listen: server.listen.bind(server),
-    reload: broadcast.bind(null, 'reload'),
-    refreshCSS: broadcast.bind(null, 'refreshCSS')
+    reload: smartReload,
+    refreshCSS
   }
 }
 

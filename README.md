@@ -34,8 +34,8 @@ watch(someFiles, function(event) {
 ### [server.listen()](https://nodejs.org/api/http.html#http_server_listen_handle_callback)
 See nodejs docs.
 
-### server.reload()
-Signals connected clients to reload the page.
+### server.reload(path)
+Signals connected clients to reload the page. If `path` is given and has an extension of `.css`, CSS will be refreshed instead of page reload.
 
 ### server.refreshCSS()
 Signals connected clients to reload CSS without page reload.
