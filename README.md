@@ -20,7 +20,7 @@ const server = Server({
 server.listen(8080)
 
 watch(someFiles, function(event) {
-  path.extname(event.path).toLowerCase() === '.css' ? server.refreshCSS() : server.reload()
+  server.reload(event.path) // smart reload based on path
 })
 ```
 
