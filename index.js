@@ -75,6 +75,12 @@ function makeInjectJS(wsPath) {
       var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://'
       var address = protocol + window.location.host + '${wsPath}'
       var socket = new WebSocket(address)
+      socket.onopen = function() {
+        console.log('Live reload enabled.')
+      }
+      socket.onerror = function(err) {
+        console.log('Live reload error!')
+      }
       socket.onmessage = function(msg) {
         if (msg.data === 'reload') {
           window.location.reload()
@@ -88,7 +94,6 @@ function makeInjectJS(wsPath) {
           })
         }
       }
-      console.log('Live reload enabled.')
     })()
   `
 }
