@@ -54,9 +54,9 @@ function server(options) {
   const reload = broadcast.bind(null, 'reload')
   const refreshCSS =  broadcast.bind(null, 'refreshCSS')
 
-  function smartReload(path) {
+  function smartReload(filePath) {
     if (path) {
-      path.extname(path).toLowerCase() === '.css' ? refreshCSS() : reload()
+      path.extname(filePath).toLowerCase() === '.css' ? refreshCSS() : reload()
     } else {
       reload()
     }
