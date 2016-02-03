@@ -12,7 +12,6 @@ npm install dust-server
 
 ```javascript
 const Server = require('dust-server')
-const path   = require('path')
 
 const server = Server({
   root: './www'
