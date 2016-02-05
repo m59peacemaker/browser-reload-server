@@ -11,10 +11,10 @@ module.exports = server
 
 function server(options) {
   options = Object.assign({
-
+    root: process.cwd()
   }, options)
 
-  const dir = path.join(process.cwd(), options.root ? '/'+options.root : '')
+  const dir = options.root
 
   const name = 'dev-server'
   const ID = uuid()
@@ -24,49 +24,61 @@ function server(options) {
   const app = express()
   const server = http.createServer(app)
   const wss = WSS({
-    server: server,
+    server,
     path: wsPath
-  });
+  })
+
   function broadcast(msg) {
     wss.clients.forEach(function each(client) {
       client.send(msg)
     })
   }
 
-  app.use(serveStatic(dir, {
-    index: false
-  }))
-  app.get('*', (req, res) => {
-    if (path.extname(req.url)) {
-      res.status(404).end('404 Not Found')
-    } else {
-      fs.readFile(path.join(dir, 'index.html'), (err, html) => {
-        if (err) { return res.status(404).end(err.toString()) }
-        const document = jsdom.jsdom(html)
-        const script = document.createElement('script')
-        script.textContent = injectJS
-        document.body.appendChild(script)
-        res.send(jsdom.serializeDocument(document))
-      })
-    }
-  })
-
   const reload = broadcast.bind(null, 'reload')
   const refreshCSS =  broadcast.bind(null, 'refreshCSS')
 
   function smartReload(filePath) {
-    if (path) {
+    if (filePath) {
       path.extname(filePath).toLowerCase() === '.css' ? refreshCSS() : reload()
     } else {
       reload()
     }
   }
 
-  return {
-    listen: server.listen.bind(server),
+  app.use(serveStatic(dir, {
+    index: false
+  }))
+  app.post('/reload', (req, res) => {
+    smartReload(req.filePath)
+    res.end()
+  })
+  app.post('/refreshCSS', (req, res) => {
+    refreshCSS()
+    res.end()
+  })
+  app.get('*', (req, res) => {
+    if (path.extname(req.url)) {
+      res.status(404).end('404 Not Found')
+    } else {
+      fs.readFile(path.join(dir, 'index.html'), 'utf8', (err, html) => {
+        if (err) { return res.status(404).end(err.toString()) }
+        const document = jsdom.jsdom(html)
+        const script = document.createElement('script')
+        script.textContent = injectJS
+        document.body.appendChild(script)
+        const resp = jsdom.serializeDocument(document)
+        res.send(resp)
+      })
+    }
+  })
+
+  Object.assign(server, {
     reload: smartReload,
-    refreshCSS
-  }
+    refreshCSS,
+    wss
+  })
+
+  return server
 }
 
 function makeInjectJS(wsPath) {

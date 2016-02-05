@@ -27,11 +27,19 @@
   },
   "license": "VOL",
   "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
   "dependencies": {
     "express": "^4.13.3",
     "jsdom": "^7.2.2",
+    "opn": "^4.0.0",
     "serve-static": "^1.10.2",
     "uuid-v4": "^0.1.0",
     "ws": "^1.0.1"
+  },
+  "devDependencies": {
+    "server-destroy": "^1.0.1",
+    "tape": "^4.4.0"
   }
 }
