@@ -2,17 +2,11 @@ const test      = require('tape')
 const Server    = require('../../')
 const WebSocket = require('ws')
 
-function listenWs(server, cb) {
-  server.listen(8080, () => {
-    var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    cb(ws)
-  })
-}
-
 test('server.reload emits "reload" to client', t => {
   t.plan(1)
   const server = Server()
-  listenWs(server, ws => {
+  server.listen(8080, () => {
+    var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
     ws.on('message', msg => {
       server.close(() => {
         t.equal(msg, 'reload')
@@ -25,7 +19,8 @@ test('server.reload emits "reload" to client', t => {
 test('server.refreshCSS emits "refreshCSS" to client', t => {
   t.plan(1)
   const server = Server()
-  listenWs(server, ws => {
+  server.listen(8080, () => {
+    var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
     ws.on('message', msg => {
       server.close(() => {
         t.equal(msg, 'refreshCSS')
@@ -38,7 +33,8 @@ test('server.refreshCSS emits "refreshCSS" to client', t => {
 test('server.reload emits "refreshCSS" if passed path to css file', t => {
   t.plan(1)
   const server = Server()
-  listenWs(server, ws => {
+  server.listen(8080, () => {
+    var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
     ws.on('message', msg => {
       server.close(() => {
         t.equal(msg, 'refreshCSS')

@@ -15,7 +15,10 @@
     "css",
     "single",
     "page",
-    "app"
+    "app",
+    "cli",
+    "terminal",
+    "command"
   ],
   "author": {
     "name": "Johnny Hauser",
