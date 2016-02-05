@@ -39,10 +39,7 @@ watch(someFiles, function(event) {
 ### Server(options)
 - `options: object`
   - `dir: string, cwd`
-- **returns**: `server`
-
-### [server.listen()](https://nodejs.org/api/http.html#http_server_listen_handle_callback)
-See nodejs docs.
+- **returns**: [server](https://nodejs.org/api/http.html#http_class_http_server)
 
 ### server.reload(path)
 Signals connected clients to reload the page. If `path` is given and has an extension of `.css`, CSS will be refreshed instead of page reload.
