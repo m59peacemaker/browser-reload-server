@@ -34,6 +34,7 @@
     "test": "node test"
   },
   "dependencies": {
+    "body-parser": "^1.14.2",
     "express": "^4.13.3",
     "jsdom": "^7.2.2",
     "opn": "^4.0.0",
@@ -42,6 +43,7 @@
     "ws": "^1.0.1"
   },
   "devDependencies": {
+    "request": "^2.69.0",
     "server-destroy": "^1.0.1",
     "tape": "^4.4.0"
   }

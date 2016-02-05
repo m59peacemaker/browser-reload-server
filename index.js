@@ -1,6 +1,7 @@
 const http        = require('http')
 const express     = require('express')
 const serveStatic = require('serve-static')
+const bodyParser  = require('body-parser')
 const path        = require('path')
 const fs          = require('fs')
 const uuid        = require('uuid-v4')
@@ -48,8 +49,9 @@ function server(options) {
   app.use(serveStatic(options.dir, {
     index: false
   }))
+  app.use(bodyParser.json())
   app.post('/reload', (req, res) => {
-    smartReload(req.filePath)
+    smartReload(req.body.path || req.query.path)
     res.end()
   })
   app.post('/refreshCSS', (req, res) => {

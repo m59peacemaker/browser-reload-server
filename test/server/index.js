@@ -1,5 +1,6 @@
 require('./spa')
-require('./api')
+require('./js-api')
+require('./http-api')
 
 // test cli
 // test POST request triggering reload

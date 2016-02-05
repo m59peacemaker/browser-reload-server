@@ -2,10 +2,9 @@ const test      = require('tape')
 const Server    = require('../../')
 const WebSocket = require('ws')
 
-const port = 8080
 function listenWs(server, cb) {
-  server.listen(port, () => {
-    var ws = new WebSocket('ws://localhost:'+port+server.wsPath)
+  server.listen(8080, () => {
+    var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
     cb(ws)
   })
 }
@@ -16,7 +15,7 @@ test('server.reload emits "reload" to client', t => {
   listenWs(server, ws => {
     ws.on('message', msg => {
       server.close(() => {
-        msg === 'reload' ? t.pass() : t.fail()
+        t.equal(msg, 'reload')
       })
     })
     ws.on('open', server.reload)
@@ -29,7 +28,7 @@ test('server.refreshCSS emits "refreshCSS" to client', t => {
   listenWs(server, ws => {
     ws.on('message', msg => {
       server.close(() => {
-        msg === 'refreshCSS' ? t.pass() : t.fail()
+        t.equal(msg, 'refreshCSS')
       })
     })
     ws.on('open', server.refreshCSS)
@@ -42,7 +41,7 @@ test('server.reload emits "refreshCSS" if passed path to css file', t => {
   listenWs(server, ws => {
     ws.on('message', msg => {
       server.close(() => {
-        msg === 'refreshCSS' ? t.pass() : t.fail()
+        t.equal(msg, 'refreshCSS')
       })
     })
     ws.on('open', () => {
