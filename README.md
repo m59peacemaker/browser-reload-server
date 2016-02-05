@@ -36,17 +36,6 @@ watch(someFiles, function(event) {
 })
 ```
 
-## HTTP API
-
-```sh
-  curl -x POST http://localhost:8080/reload
-  curl -x POST http://localhost:8080/refreshCSS
-```
-
-The `path` parameter of `server.reload` can be passed as JSON in the body or as a query parameter.
-`{"path": "/path/here.css"}`
-`path=/path/here.css`
-
 ### Server(options)
 - `options: object`
   - `dir: string, cwd`
@@ -60,3 +49,17 @@ Signals connected clients to reload the page. If `path` is given and has an exte
 
 ### server.refreshCSS()
 Signals connected clients to reload CSS without page reload.
+
+## HTTP API
+
+```sh
+curl -x POST http://localhost:8080/reload
+curl -x POST http://localhost:8080/refreshCSS
+```
+
+The `path` parameter of `server.reload` can be passed as JSON in the body or as a query parameter.
+
+`{"path": "/path/here.css"}`
+
+`path=/path/here.css`
+
