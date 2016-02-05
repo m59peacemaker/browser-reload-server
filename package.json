@@ -27,6 +27,9 @@
   },
   "license": "VOL",
   "main": "index.js",
+  "bin": {
+    "dust-server": "bin/cmd.js"
+  },
   "scripts": {
     "test": "node test"
   },

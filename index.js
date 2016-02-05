@@ -6,6 +6,7 @@ const fs          = require('fs')
 const uuid        = require('uuid-v4')
 const WSS         = require('ws').Server
 const jsdom       = require('jsdom')
+const clientJS    = fs.readFileSync(__dirname+'/lib/client.js', 'utf8')
 
 module.exports = server
 
@@ -19,7 +20,7 @@ function server(options) {
   const name = 'dev-server'
   const ID = uuid()
   const wsPath = path.join('/', ID, name)
-  const injectJS = makeInjectJS(wsPath)
+  const injectJS = `(${clientJS})('${wsPath}')`
 
   const app = express()
   const server = http.createServer(app)
@@ -79,33 +80,4 @@ function server(options) {
   })
 
   return server
-}
-
-function makeInjectJS(wsPath) {
-  return `
-    (function() {
-      var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://'
-      var address = protocol + window.location.host + '${wsPath}'
-      var socket = new WebSocket(address)
-      socket.onopen = function() {
-        console.log('Live reload enabled.')
-      }
-      socket.onerror = function(err) {
-        console.log('Live reload error!')
-      }
-      socket.onmessage = function(msg) {
-        if (msg.data === 'reload') {
-          window.location.reload()
-        } else if (msg.data === 'refreshCSS') {
-          [].slice.call(document.getElementsByTagName('link')).forEach(function(elem) {
-            if (!elem.rel || elem.rel.toLowerCase() === 'stylesheet') {
-              var param = 'cache-bust'
-              href = elem.href.replace(new RegExp('('+param+'=)[^\&]+'), '')
-              elem.href = href+(~href.indexOf('?') ? '&' : '?')+param+'='+(new Date().valueOf())
-            }
-          })
-        }
-      }
-    })()
-  `
 }

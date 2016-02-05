@@ -8,13 +8,26 @@ Simple SPA development server with reload API. Injects reload script.
 npm install dust-server
 ```
 
-## Usage
+## CLI
+
+```sh
+dust-server [options]
+```
+
+```txt
+  --help, -h
+  --dir,  -d   directory of files to be served [cwd]
+  --port, -p   `port` argument for server.listen() [8080]
+  --host, -H   `host` argument for server.listen()
+```
+
+## API
 
 ```javascript
 const Server = require('dust-server')
 
 const server = Server({
-  root: './www'
+  dir: './www'
 })
 server.listen(8080)
 
@@ -23,11 +36,9 @@ watch(someFiles, function(event) {
 })
 ```
 
-## API
-
 ### Server(options)
 - `options: object`
-  - `root: string` path (from cwd) to static directory to be served
+  - `dir: string, cwd`
 - **returns**: `server`
 
 ### [server.listen()](https://nodejs.org/api/http.html#http_server_listen_handle_callback)
