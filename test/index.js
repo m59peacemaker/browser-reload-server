@@ -1,3 +1,5 @@
+require('./server')
+
 /*
 const test   = require('tape')
 const open   = require('opn')

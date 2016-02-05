@@ -11,11 +11,10 @@ const clientJS    = fs.readFileSync(__dirname+'/lib/client.js', 'utf8')
 module.exports = server
 
 function server(options) {
-  options = Object.assign({
-    root: process.cwd()
-  }, options)
 
-  const dir = options.root
+  options = Object.assign({
+    dir: process.cwd()
+  }, options)
 
   const name = 'dev-server'
   const ID = uuid()
@@ -46,7 +45,7 @@ function server(options) {
     }
   }
 
-  app.use(serveStatic(dir, {
+  app.use(serveStatic(options.dir, {
     index: false
   }))
   app.post('/reload', (req, res) => {
@@ -61,7 +60,7 @@ function server(options) {
     if (path.extname(req.url)) {
       res.status(404).end('404 Not Found')
     } else {
-      fs.readFile(path.join(dir, 'index.html'), 'utf8', (err, html) => {
+      fs.readFile(path.join(options.dir, 'index.html'), 'utf8', (err, html) => {
         if (err) { return res.status(404).end(err.toString()) }
         const document = jsdom.jsdom(html)
         const script = document.createElement('script')
@@ -73,9 +72,17 @@ function server(options) {
     }
   })
 
+  const oldClose = server.close
+  server.close = function() {
+    server.wss.close(() => {
+      oldClose.apply(server, arguments)
+    })
+  }
+
   Object.assign(server, {
     reload: smartReload,
     refreshCSS,
+    wsPath,
     wss
   })
 
