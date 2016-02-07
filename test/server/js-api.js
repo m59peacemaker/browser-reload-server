@@ -16,6 +16,38 @@ test('server.reload emits "reload" to client', t => {
   })
 })
 
+test('server.reload emits "refreshCSS" if passed path to css file', t => {
+  t.plan(1)
+  const server = Server()
+  server.listen(8080, () => {
+    var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
+    ws.on('message', msg => {
+      server.close(() => {
+        t.equal(msg, 'refreshCSS')
+      })
+    })
+    ws.on('open', () => {
+      server.reload('/dude/swag.css')
+    })
+  })
+})
+
+test('server.reload emits "refreshImages" if passed path to image file', t => {
+  t.plan(1)
+  const server = Server()
+  server.listen(8080, () => {
+    var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
+    ws.on('message', msg => {
+      server.close(() => {
+        t.equal(msg, 'refreshImages')
+      })
+    })
+    ws.on('open', () => {
+      server.reload('/dude/swag.png')
+    })
+  })
+})
+
 test('server.refreshCSS emits "refreshCSS" to client', t => {
   t.plan(1)
   const server = Server()
@@ -30,18 +62,16 @@ test('server.refreshCSS emits "refreshCSS" to client', t => {
   })
 })
 
-test('server.reload emits "refreshCSS" if passed path to css file', t => {
+test('server.refreshImages emits "refreshImages" to client', t => {
   t.plan(1)
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
     ws.on('message', msg => {
       server.close(() => {
-        t.equal(msg, 'refreshCSS')
+        t.equal(msg, 'refreshImages')
       })
     })
-    ws.on('open', () => {
-      server.reload('/dude/swag.css')
-    })
+    ws.on('open', server.refreshImages)
   })
 })

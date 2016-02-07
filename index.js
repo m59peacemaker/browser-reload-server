@@ -6,7 +6,8 @@ const path        = require('path')
 const fs          = require('fs')
 const uuid        = require('uuid-v4')
 const WSS         = require('ws').Server
-const jsdom       = require('jsdom')
+const isImgExt    = require('./lib/is-img-ext')
+const addJsToHTML = require('./lib/add-js-to-html')
 const clientJS    = fs.readFileSync(__dirname+'/lib/client.js', 'utf8')
 
 module.exports = server
@@ -14,19 +15,17 @@ module.exports = server
 function server(options) {
 
   options = Object.assign({
-    dir: process.cwd()
+    dir: process.cwd(),
+    wsPath: path.join('/', uuid(), 'dev-server')
   }, options)
 
-  const name = 'dev-server'
-  const ID = uuid()
-  const wsPath = path.join('/', ID, name)
-  const injectJS = `(${clientJS})('${wsPath}')`
+  const injectJS = `(${clientJS})('${options.wsPath}')`
 
   const app = express()
   const server = http.createServer(app)
   const wss = WSS({
     server,
-    path: wsPath
+    path: options.wsPath
   })
 
   function broadcast(msg) {
@@ -37,10 +36,14 @@ function server(options) {
 
   const reload = broadcast.bind(null, 'reload')
   const refreshCSS =  broadcast.bind(null, 'refreshCSS')
+  const refreshImages =  broadcast.bind(null, 'refreshImages')
 
   function smartReload(filePath) {
-    if (filePath) {
-      path.extname(filePath).toLowerCase() === '.css' ? refreshCSS() : reload()
+    const ext = path.extname(filePath).toLowerCase().slice(1)
+    if (ext === 'css') {
+      refreshCSS()
+    } else if (isImgExt(ext)) {
+      refreshImages()
     } else {
       reload()
     }
@@ -54,8 +57,12 @@ function server(options) {
     smartReload(req.body.path || req.query.path)
     res.end()
   })
-  app.post('/refreshCSS', (req, res) => {
+  app.post('/reload/css', (req, res) => {
     refreshCSS()
+    res.end()
+  })
+  app.post('/reload/img', (req, res) => {
+    refreshImages()
     res.end()
   })
   app.get('*', (req, res) => {
@@ -64,11 +71,7 @@ function server(options) {
     } else {
       fs.readFile(path.join(options.dir, 'index.html'), 'utf8', (err, html) => {
         if (err) { return res.status(404).end(err.toString()) }
-        const document = jsdom.jsdom(html)
-        const script = document.createElement('script')
-        script.textContent = injectJS
-        document.body.appendChild(script)
-        const resp = jsdom.serializeDocument(document)
+        const resp = addJsToHTML(html, injectJS)
         res.send(resp)
       })
     }
@@ -84,7 +87,8 @@ function server(options) {
   Object.assign(server, {
     reload: smartReload,
     refreshCSS,
-    wsPath,
+    refreshImages,
+    wsPath: options.wsPath,
     wss
   })
 
