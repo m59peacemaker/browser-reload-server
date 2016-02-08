@@ -13,7 +13,6 @@ program
   .parse(process.argv)
 
 const server = Server(program)
-console.log(program)
 const listener = server.listen(program.port || 8080, program.host, () => {
   console.log('Listening on port: '+listener.address().port)
   console.log('WebSocket path: '+server.wsPath)

@@ -8,7 +8,7 @@ const uuid        = require('uuid-v4')
 const WSS         = require('ws').Server
 const isImgExt    = require('./lib/is-img-ext')
 const addJsToHTML = require('./lib/add-js-to-html')
-const clientJS    = fs.readFileSync(__dirname+'/lib/client.js', 'utf8')
+const clientJS    = fs.readFileSync(__dirname+'/client/dist/client.js', 'utf8')
 
 module.exports = server
 
@@ -19,7 +19,14 @@ function server(options) {
     wsPath: path.join('/', uuid(), 'dev-server')
   }, options)
 
-  const injectJS = `(${clientJS})('${options.wsPath}')`
+  const injectJS = `
+    (function() {
+      ${clientJS}
+      var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://'
+      var url = protocol + window.location.host + '${options.wsPath}'
+      Client(url)
+    })()
+  `
 
   const app = express()
   const server = http.createServer(app)
