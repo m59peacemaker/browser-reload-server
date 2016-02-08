@@ -8,7 +8,9 @@ const uuid        = require('uuid-v4')
 const WSS         = require('ws').Server
 const isImgExt    = require('./lib/is-img-ext')
 const addJsToHTML = require('./lib/add-js-to-html')
-const clientJS    = fs.readFileSync(__dirname+'/client/dist/client.js', 'utf8')
+const execSync    = require('child_process').execSync
+
+const clientJS = execSync('node ./lib/bundle-client-js').toString()
 
 module.exports = server
 

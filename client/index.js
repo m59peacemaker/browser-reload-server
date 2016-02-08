@@ -7,23 +7,23 @@ const helpers = {
 }
 
 const actions = {
-  reload: window.location.reload,
+  reload: window.location.reload.bind(window.location),
   refreshCSS,
   refreshImages
 }
 
 function Client(wsUrl) {
   var socket = new WebSocket(wsUrl)
-  socket.onopen = function() {
+  socket.addEventListener('open', () => {
     console.log('Live reload enabled.')
-  }
-  socket.onerror = function(err) {
+  })
+  socket.addEventListener('error', err => {
     console.log('Live reload error!')
-  }
-  socket.onmessage = function(event) {
+  })
+  socket.addEventListener('message', event => {
     const action = actions[event.data.type]
     action && action()
-  }
+  })
   return {
     socket,
     ...helpers
