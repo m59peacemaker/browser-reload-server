@@ -3,7 +3,7 @@ const spawn = require('child_process').spawn
 const WebSocket = require('ws')
 const request = require('request')
 
-const delay = 800
+const delay = 2000
 
 test('cmd starts the server', t => {
   t.plan(1)

@@ -6,10 +6,11 @@ const pkg     = require('../package')
 
 program
   .version(pkg.version)
-  .option('-d, --dir  [value]', 'directory of files to be served [cwd]')
-  .option('-p, --port [value]', '`port` argument for server.listen() [8080]')
-  .option('-H, --host [value]', '`host` argument for server.listen()')
-  .option('--wsPath   [value]', 'path to the websocket server')
+  .option('-d, --dir   [value]', 'directory of files to be served [cwd]')
+  .option('-p, --port  [value]', '`port` argument for server.listen() [8080]')
+  .option('-H, --host  [value]', '`host` argument for server.listen()')
+  .option('-q, --quiet'        , 'disable logging')
+  .option('--wsPath    [value]', 'path to the websocket server')
   .parse(process.argv)
 
 const server = Server(program)

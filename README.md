@@ -20,6 +20,7 @@ dust-server [options]
   -d, --dir  [value]  directory of files to be served [cwd]
   -p, --port [value]  `port` argument for server.listen() [8080]
   -H, --host [value]  `host` argument for server.listen()
+  -q, --quiet         disable logging
   --wsPath   [value]  path to the websocket server
 ```
 
@@ -42,6 +43,7 @@ watch(someFiles, function(event) {
 - `options: object`
   - `dir: string, cwd`
   - `wsPath: string, random`
+  - `quiet: boolean, false`
 - **returns**: [server](https://nodejs.org/api/http.html#http_class_http_server)
 
 ### server.reload(path)
@@ -61,14 +63,19 @@ The [ws](https://www.npmjs.com/package/ws) server.
 
 ## HTTP API
 
-```sh
-curl -x POST http://localhost:8080/reload
-curl -x POST http://localhost:8080/reload/css
-curl -x POST http://localhost:8080/reload/img
+```
+POST /reload
+POST /reload/css
+POST /reload/img
 ```
 
 The `path` parameter of `server.reload` can be passed as JSON in the body or as a query parameter.
 
 `{"path": "/path/here.css"}`
 
-`/live-reload?path=/path/here.css`
+`/reload?path=/path/here.css`
+
+
+```sh
+curl -X POST http://localhost:8080/reload
+```

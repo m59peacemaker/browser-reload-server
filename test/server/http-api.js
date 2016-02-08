@@ -8,9 +8,9 @@ test('POST /reload emits "reload" to client', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'reload')
+        t.equal(JSON.parse(data).type, 'reload')
       })
     })
     ws.on('open', () => {
@@ -26,9 +26,9 @@ test('POST /reload emits "refreshCSS" if body.path is to css file', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshCSS')
+        t.equal(JSON.parse(data).type, 'refreshCSS')
       })
     })
     ws.on('open', () => {
@@ -45,9 +45,9 @@ test('POST /reload emits "refreshCSS" if query.path is to css file', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshCSS')
+        t.equal(JSON.parse(data).type, 'refreshCSS')
       })
     })
     ws.on('open', () => {
@@ -63,9 +63,9 @@ test('POST /reload emits "refreshImages" if body.path is to image file', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshImages')
+        t.equal(JSON.parse(data).type, 'refreshImages')
       })
     })
     ws.on('open', () => {
@@ -82,9 +82,9 @@ test('POST /reload emits "refreshImages" if query.path is to image file', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshImages')
+        t.equal(JSON.parse(data).type, 'refreshImages')
       })
     })
     ws.on('open', () => {
@@ -101,9 +101,9 @@ test('POST /reload/css emits "refreshCSS" to client', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshCSS')
+        t.equal(JSON.parse(data).type, 'refreshCSS')
       })
     })
     ws.on('open', () => {
@@ -119,9 +119,9 @@ test('POST /reload/img emits "refreshImages" to client', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshImages')
+        t.equal(JSON.parse(data).type, 'refreshImages')
       })
     })
     ws.on('open', () => {

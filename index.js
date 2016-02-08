@@ -18,14 +18,20 @@ function server(options) {
 
   options = Object.assign({
     dir: process.cwd(),
-    wsPath: path.join('/', uuid(), 'dev-server')
+    wsPath: path.join('/', uuid(), 'dev-server'),
+    quiet: false
   }, options)
+
+  function log() {
+    if (options.quiet) { return }
+    console.log.apply(console, arguments)
+  }
 
   const injectJS = `
     ${clientJS}
     var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://'
     var url = protocol + window.location.host + '${options.wsPath}'
-    devServer.ClientModule.default(url)
+    devServer.ClientModule.default(url, {quiet: ${options.quiet}})
   `
 
   const app = express()
@@ -35,9 +41,14 @@ function server(options) {
     path: options.wsPath
   })
 
-  function broadcast(msg) {
+  function broadcast(type, path) {
+    log('action: '+type)
+    path && log('path: '+path)
     wss.clients.forEach(function each(client) {
-      client.send(msg)
+      client.send(JSON.stringify({
+        type,
+        path
+      }))
     })
   }
 
@@ -48,12 +59,16 @@ function server(options) {
   function smartReload(filePath) {
     const ext = path.extname(filePath).toLowerCase().slice(1)
     if (ext === 'css') {
-      refreshCSS()
+      refreshCSS(filePath)
     } else if (isImgExt(ext)) {
-      refreshImages()
+      refreshImages(filePath)
     } else {
-      reload()
+      reload(filePath)
     }
+  }
+
+  function getFilePathFromReq(req) {
+    return req.body.path || req.query.path
   }
 
   app.use(serveStatic(options.dir, {
@@ -61,15 +76,15 @@ function server(options) {
   }))
   app.use(bodyParser.json())
   app.post('/reload', (req, res) => {
-    smartReload(req.body.path || req.query.path)
+    smartReload(getFilePathFromReq(req))
     res.end()
   })
   app.post('/reload/css', (req, res) => {
-    refreshCSS()
+    refreshCSS(getFilePathFromReq(req))
     res.end()
   })
   app.post('/reload/img', (req, res) => {
-    refreshImages()
+    refreshImages(getFilePathFromReq(req))
     res.end()
   })
   app.get('*', (req, res) => {

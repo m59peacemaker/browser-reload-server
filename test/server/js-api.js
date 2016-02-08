@@ -7,9 +7,9 @@ test('server.reload emits "reload" to client', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'reload')
+        t.equal(JSON.parse(data).type, 'reload')
       })
     })
     ws.on('open', server.reload)
@@ -21,9 +21,9 @@ test('server.reload emits "refreshCSS" if passed path to css file', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshCSS')
+        t.equal(JSON.parse(data).type, 'refreshCSS')
       })
     })
     ws.on('open', () => {
@@ -37,9 +37,9 @@ test('server.reload emits "refreshImages" if passed path to image file', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshImages')
+        t.equal(JSON.parse(data).type, 'refreshImages')
       })
     })
     ws.on('open', () => {
@@ -53,9 +53,9 @@ test('server.refreshCSS emits "refreshCSS" to client', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshCSS')
+        t.equal(JSON.parse(data).type, 'refreshCSS')
       })
     })
     ws.on('open', server.refreshCSS)
@@ -67,9 +67,9 @@ test('server.refreshImages emits "refreshImages" to client', t => {
   const server = Server()
   server.listen(8080, () => {
     var ws = new WebSocket('ws://localhost:8080'+server.wsPath)
-    ws.on('message', msg => {
+    ws.on('message', data => {
       server.close(() => {
-        t.equal(msg, 'refreshImages')
+        t.equal(JSON.parse(data).type, 'refreshImages')
       })
     })
     ws.on('open', server.refreshImages)
