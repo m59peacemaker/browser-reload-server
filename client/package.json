@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "browserify ./index.js -s Client > ./dist/client.js"
+    "build": "browserify ./index.js -s devServer.ClientModule > ./dist/client.js"
   },
   "browserify": {
     "transform": [

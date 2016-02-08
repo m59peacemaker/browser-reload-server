@@ -20,12 +20,10 @@ function server(options) {
   }, options)
 
   const injectJS = `
-    (function() {
-      ${clientJS}
-      var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://'
-      var url = protocol + window.location.host + '${options.wsPath}'
-      Client(url)
-    })()
+    ${clientJS}
+    var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://'
+    var url = protocol + window.location.host + '${options.wsPath}'
+    devServer.ClientModule.default(url)
   `
 
   const app = express()
