@@ -1,17 +1,17 @@
-# Dust Server
+# Reload Server
 
 Simple SPA development server with reload API. Injects reload script.
 
 ## Install
 
 ```sh
-npm install dust-server
+npm install @m59/reload-server
 ```
 
 ## CLI
 
 ```sh
-dust-server [options]
+m59-reload-server [options]
 ```
 
 ```txt
@@ -27,7 +27,7 @@ dust-server [options]
 ## JS API
 
 ```javascript
-const Server = require('dust-server')
+const Server = require('@m59/reload-server')
 
 const server = Server({
   dir: './www'
