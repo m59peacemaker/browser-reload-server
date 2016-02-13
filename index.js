@@ -10,7 +10,7 @@ const isImgExt    = require('./lib/is-img-ext')
 const addJsToHTML = require('./lib/add-js-to-html')
 const execSync    = require('child_process').execSync
 
-const clientJS = execSync('node ./lib/bundle-client-js').toString()
+const clientJS = execSync(`node ${__dirname}/lib/bundle-client-js`).toString()
 
 module.exports = server
 
@@ -24,7 +24,12 @@ function server(options) {
 
   function log() {
     if (options.quiet) { return }
-    console.log.apply(console, arguments)
+    [].slice.call(arguments).forEach(item => {
+      if (typeof item === 'string') {
+        item = '[reload-server] '+item
+      }
+      console.log(item)
+    })
   }
 
   const injectJS = `
