@@ -18,7 +18,7 @@ function server(options) {
 
   options = Object.assign({
     dir: process.cwd(),
-    wsPath: path.join('/', uuid(), 'dev-server'),
+    wsPath: path.join('/', uuid(), 'reload-server'),
     quiet: false
   }, options)
 
