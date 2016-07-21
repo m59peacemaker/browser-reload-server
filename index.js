@@ -62,6 +62,7 @@ function server(options) {
   const refreshImages =  broadcast.bind(null, 'refreshImages')
 
   function smartReload(filePath) {
+    if (filePath === undefined) { filePath = '' }
     const ext = path.extname(filePath).toLowerCase().slice(1)
     if (ext === 'css') {
       refreshCSS(filePath)
